@@ -67,7 +67,7 @@ weights.grad.zero_()
 with torch.no_grad():
     weights[0] = 0
 
-epochs = 1_100
+epochs = 1_060
 learning_rate = 1e-4
 
 for epoch in range(1, epochs + 1):
