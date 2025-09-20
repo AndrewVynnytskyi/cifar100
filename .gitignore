@@ -284,3 +284,20 @@ chroma*/
 # Cifar100
 cifar-100-python/
 cifar100/
+
+# Models
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.model
+*.pb
+*.tflite
+*.onnx
+*.sav
+*.joblib
+*.bin
+*.data
+*.index
+*.meta
+*.ckpt.*
