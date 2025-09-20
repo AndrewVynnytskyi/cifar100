@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 print(torch.version.cuda)
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # %%
 x = torch.randn(2, 3, device=device)
@@ -13,16 +13,16 @@ print(x.dtype, x.shape)
 y = torch.randn(2, 3, requires_grad=True, device=device)
 z = y + x + 2
 print(z.grad_fn)
-z = z ** 2
+z = z**2
 print(z.grad_fn)
 
 mean = z.mean()
 mean.backward()
 
-print('dz/dx')
-print(x.grad) # No grad because requires_grad isn't set to True
+print("dz/dx")
+print(x.grad)  # No grad because requires_grad isn't set to True
 
-print('dz/dy')
+print("dz/dy")
 print(y.grad)
 
 # %%
@@ -40,11 +40,24 @@ x = torch.tensor(
     device=device,
 )
 y = torch.tensor(
-    [41.31, 62.6308, 11.3310, 33.7887, 59.1990, 45.7684, 537.7081, 618.6777, 453.9877, 284.8704, 333.1389],
+    [
+        41.31,
+        62.6308,
+        11.3310,
+        33.7887,
+        59.1990,
+        45.7684,
+        537.7081,
+        618.6777,
+        453.9877,
+        284.8704,
+        333.1389,
+    ],
     device=device,
 )
 
 weights = torch.zeros(1, device=device, requires_grad=True)
+
 
 def forward(_x) -> torch.Tensor:
     return weights * _x
@@ -54,12 +67,13 @@ def loss(y_actual: torch.Tensor, y_pred: torch.Tensor):
     # MSE
     return ((y_actual - y_pred) ** 2).mean()
 
+
 # %%
 
 # Non-trained pass
 test = 5.1
-first_result = forward(test).item() # 0
-print(f'Test: f({test}) = {first_result}')
+first_result = forward(test).item()  # 0
+print(f"Test: f({test}) = {first_result}")
 
 # Training
 
@@ -72,8 +86,8 @@ learning_rate = 1e-4
 
 for epoch in range(1, epochs + 1):
     y_pred = forward(x)
-    l = loss(y, y_pred)
-    l.backward()
+    loss_value = loss(y, y_pred)
+    loss_value.backward()
 
     with torch.no_grad():
         weights -= learning_rate * weights.grad
@@ -81,12 +95,16 @@ for epoch in range(1, epochs + 1):
     weights.grad.zero_()
 
     if epoch % 10 == 0:
-        print(f"Epoch {epoch} loss: {l}, weights: {weights.item()}")
+        print(
+            f"Epoch {epoch}, "
+            f"loss: {loss_value}, "
+            f"weights: {weights.item()}"
+        )
 
 print("Predict USD/UAH rate: ")
 test = [5.1, 10.4, 1.0, -11]
 result = [forward(sample).item() for sample in test]
-print(f'Test: f({test}) = {result}')
+print(f"Test: f({test}) = {result}")
 
 # %%
 
@@ -97,12 +115,25 @@ X = torch.tensor(
     device=device,
 )
 Y = torch.tensor(
-    [[41.31], [62.6308], [11.3310], [33.7887], [59.1990], [45.7684], [537.7081], [618.6777], [453.9877], [284.8704], [333.1389]],
+    [
+        [41.31],
+        [62.6308],
+        [11.3310],
+        [33.7887],
+        [59.1990],
+        [45.7684],
+        [537.7081],
+        [618.6777],
+        [453.9877],
+        [284.8704],
+        [333.1389],
+    ],
     device=device,
 )
 
 n_samples, n_features = X.shape
 print(f"Samples={n_samples}, features={n_features}")
+
 
 class LinearRegression(nn.Module):
     def __init__(self, input_dim: int, output_dim: int):
@@ -117,7 +148,7 @@ model = LinearRegression(n_features, n_features)
 
 test = torch.tensor([-1.0], device=device)
 first_result = model(test).item()
-print(f'Test: f({test}) = {first_result}')
+print(f"Test: f({test}) = {first_result}")
 
 # Train
 
@@ -128,8 +159,8 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 for epoch in range(1, epochs + 1):
     y_pred = model(X)
 
-    l = loss(Y, y_pred)
-    l.backward()
+    loss_value = loss(Y, y_pred)
+    loss_value.backward()
 
     # update weights and clear them
     optimizer.step()
@@ -137,11 +168,16 @@ for epoch in range(1, epochs + 1):
 
     if epoch % 1000 == 0:
         w, b = model.parameters()
-        print(f"Epoch {epoch} loss: {l}, weights: {w[0][0].item()}, bias: {b.item()}")
+        print(
+            f"Epoch {epoch}, "
+            f"loss: {loss_value}, "
+            f"weights: {w[0][0].item()}, "
+            f"bias: {b.item()}"
+        )
 
 # %%
 
 print("Predict USD/UAH rate: ")
 test = torch.tensor([[5.1], [10.4], [1.0], [-11]], device=device)
 result = [model(sample).item() for sample in test]
-print(f'Test: f({test.cpu().numpy().flatten()}) = {result}')
+print(f"Test: f({test.cpu().numpy().flatten()}) = {result}")

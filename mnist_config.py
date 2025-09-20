@@ -1,4 +1,3 @@
-
 input_size_mnist = 784
 hidden_size_mnist = 500
 num_classes_mnist = 10
