@@ -285,6 +285,13 @@ chroma*/
 cifar-100-python/
 cifar100/
 
+#Cidar10
+cifar10/
+
+#MNIST
+data/
+
+
 # Models
 *.pth
 *.pt
