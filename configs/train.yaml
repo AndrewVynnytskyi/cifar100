@@ -1,0 +1,34 @@
+# configs/train.yaml
+# All hyper-parameters live here — no magic numbers in source code.
+# Override any value from the CLI:
+#   python -m src.train training.lr=3e-4 training.epochs=100
+
+seed: 42
+
+data:
+  root: "./data"
+  num_workers: 4
+  pin_memory: True
+
+model:
+  num_classes: 100
+  num_superclasses: 20
+  dropout_p: 0.5
+
+training:
+  epochs: 150
+  batch_size: 128
+  lr: 0.1              # SGD + OneCycleLR max_lr
+  weight_decay: 5.0e-4
+  label_smoothing: 0.1
+  log_every: 100        # log every N steps
+
+wandb:
+  enabled: false
+  project: "cifar100-vgg16"
+  run_name: null        # null → W&B generates a name automatically
+  tags: ["cifar100", "vgg16", "baseline"]
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
