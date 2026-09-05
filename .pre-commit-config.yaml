@@ -1,17 +1,26 @@
+# .pre-commit-config.yaml
+# Run on every commit: pre-commit install
+# Run manually:        pre-commit run --all-files
+
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]   # block accidental model-weight commits
 
-- repo: https://github.com/psf/black
-  rev: 25.9.0
-  hooks:
-    - id: black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff           # linter
+        args: [--fix]
+      - id: ruff-format    # formatter (replaces black)
 
-- repo: https://github.com/pycqa/flake8
-  rev: 7.3.0
-  hooks:
-    - id: flake8
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [torch, torchvision]

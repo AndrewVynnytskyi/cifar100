@@ -1,8 +1,79 @@
-[tool.flake8]
-max-line-length = 80
-extend-ignore = ["E203", "W503"]
-exclude = [".git", "__pycache__", ".venv", "venv", "build", "dist"]
+# pyproject.toml
+# Modern Python packaging (PEP 517/518/660).
+# Replaces setup.py + requirements.txt — single source of truth.
+#
+# Install the project:
+#   pip install -e .           # editable, no extras
+#   pip install -e ".[dev]"    # + dev/test dependencies
 
-[tool.black]
-line-length = 80
-target-version = ["py312"]
+[build-system]
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name        = "cifar100-vgg16-project"
+version     = "0.1.0"
+description = "CIFAR-100 classification with VGG16: hierarchical loss, SupCon pretraining, and iterative filter pruning"
+readme      = "README.md"
+requires-python = ">=3.10"
+license     = { text = "MIT" }
+
+authors = [
+    { name = "Andrii Vynnytskyi" },
+]
+
+# ---------- Core runtime dependencies ----------
+# Pinned to what is actually installed in the dev environment (`pip list`) and
+# actually imported by code currently in this repo (src/ + notebooks/). Do not
+# add hydra-core, omegaconf, wandb, scikit-learn, or tqdm back here until code
+# that imports them actually exists — configs/train.yaml and the README
+# describe an intended future workflow using some of these, but nothing in
+# the repo imports them yet, so no version can be honestly verified for them.
+dependencies = [
+    "torch==2.9.0",
+    "torchvision",     # UNVERIFIED: imported in src/train.py, but not installed
+                        # in this environment — no version could be checked.
+    "matplotlib==3.10.7",
+    "numpy==1.26.4",
+]
+
+# ---------- Optional extras ----------
+[project.optional-dependencies]
+# pytest, ruff, mypy, and pre-commit are configured below / in
+# .pre-commit-config.yaml but are NOT installed in this environment, so their
+# versions are left unpinned rather than guessed.
+dev = [
+    "pytest",           # UNVERIFIED: not installed in this environment
+    "pytest-cov",       # UNVERIFIED: not installed in this environment
+    "ruff",             # UNVERIFIED: not installed in this environment
+    "mypy",             # UNVERIFIED: not installed in this environment
+    "pre-commit",       # UNVERIFIED: not installed in this environment
+    "ipykernel==7.0.1",
+]
+
+# ---------- Package discovery ----------
+# Without this, setuptools' auto-discovery does not reliably register `src` as an
+# importable package — `pip install -e .` can succeed while `import src` still
+# fails. Being explicit makes `from src.model import ...` work everywhere,
+# independent of the caller's working directory.
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+# ---------- Tooling configuration ----------
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "N", "ANN"]   # pycodestyle, pyflakes, isort, pyupgrade, naming, annotations
+ignore = ["ANN101", "ANN102"]                  # ignore self/cls annotations
+
+[tool.mypy]
+python_version       = "3.10"
+strict               = true
+ignore_missing_imports = true
+disable_error_code     = ["type-arg", "no-any-return", "no-untyped-call"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-v --cov=src --cov-report=term-missing"
