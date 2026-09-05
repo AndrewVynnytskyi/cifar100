@@ -1,3 +1,6 @@
+# IDE
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -297,6 +300,11 @@ data/
 *.pt
 *.ckpt
 *.h5
+
+# Training outputs / checkpoints / experiment tracking
+outputs/
+checkpoints/
+wandb/
 *.model
 *.pb
 *.tflite
