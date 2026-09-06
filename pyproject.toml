@@ -23,16 +23,15 @@ authors = [
 ]
 
 # ---------- Core runtime dependencies ----------
-# Pinned to what is actually installed in the dev environment (`pip list`) and
-# actually imported by code currently in this repo (src/ + notebooks/). Do not
-# add hydra-core, omegaconf, wandb, scikit-learn, or tqdm back here until code
-# that imports them actually exists — configs/train.yaml and the README
-# describe an intended future workflow using some of these, but nothing in
-# the repo imports them yet, so no version can be honestly verified for them.
+# Limited to what code currently in this repo (src/ + notebooks/) actually
+# imports. Do not add hydra-core, omegaconf, wandb, scikit-learn, or tqdm back
+# here until code that imports them exists — configs/train.yaml and the README
+# describe an intended future workflow using some of these, but nothing in the
+# repo imports them yet.
 dependencies = [
     "torch==2.9.0",
-    "torchvision",     # UNVERIFIED: imported in src/train.py, but not installed
-                        # in this environment — no version could be checked.
+    "torchvision",     # imported in src/train.py; left unpinned deliberately so
+                        # it resolves against the installed torch build.
     "matplotlib==3.10.7",
     "numpy==1.26.4",
 ]
@@ -40,14 +39,14 @@ dependencies = [
 # ---------- Optional extras ----------
 [project.optional-dependencies]
 # pytest, ruff, mypy, and pre-commit are configured below / in
-# .pre-commit-config.yaml but are NOT installed in this environment, so their
-# versions are left unpinned rather than guessed.
+# .pre-commit-config.yaml, but no test or lint run has been made against this
+# repo yet, so they are left unpinned rather than pinned to a guessed version.
 dev = [
-    "pytest",           # UNVERIFIED: not installed in this environment
-    "pytest-cov",       # UNVERIFIED: not installed in this environment
-    "ruff",             # UNVERIFIED: not installed in this environment
-    "mypy",             # UNVERIFIED: not installed in this environment
-    "pre-commit",       # UNVERIFIED: not installed in this environment
+    "pytest",           # unpinned: see note above
+    "pytest-cov",       # unpinned: see note above
+    "ruff",             # unpinned: see note above
+    "mypy",             # unpinned: see note above
+    "pre-commit",       # unpinned: see note above
     "ipykernel==7.0.1",
 ]
 

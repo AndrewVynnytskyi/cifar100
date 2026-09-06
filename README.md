@@ -5,23 +5,9 @@ to eventually cover a baseline classifier plus three additional experiments (hie
 fine/coarse classification, supervised contrastive pretraining, and iterative filter pruning).
 Personal learning project, also intended as a portfolio piece.
 
-## Status
-
-**Work in progress, not runnable end-to-end yet.**
-
-- `src/model.py`: `FINE_TO_COARSE` mapping and `VGG16CIFAR100`'s conv blocks (`conv_l1`
-  through `conv_l5`, `avgpool`, `classifier`) are written. `VGG16CIFAR100.forward()`,
-  `VGG16DualHead`, and `build_projection_matrix()` are not written yet.
-- `src/train.py`: `Cutout` and `build_dataloaders` are written. The `Trainer` class
-  (`__init__`, `_train_one_epoch`, `_evaluate`, `_save_checkpoint`, `fit`) is not written yet.
-- `src/experiments/` (`hierarchical.py`, `supcon.py`, `pruning.py`) — not started, files do not
-  exist yet.
-- `notebooks/06_cifar100_baseline.ipynb` through `09_pruning_experiment.ipynb`, referenced in
-  `PLAN.md`, do not exist yet.
-- `tests/` contains only `__init__.py` — no tests written yet.
-- Nothing has been run end-to-end. No results exist.
-
-See `PLAN.md` for the full task breakdown and what's planned next.
+The VGG16 backbone is written by hand rather than imported from `torchvision`, which is the
+point of the exercise: the architecture, the training loop, and each experiment are meant to be
+built by hand rather than scaffolded in advance. See `PLAN.md` for the full task breakdown.
 
 ## Structure
 
@@ -41,21 +27,38 @@ tests/
 configs/
   train.yaml                  hyperparameter config; references Hydra/OmegaConf/W&B, but no
                                code in this repo loads or uses it yet
-Dockerfile                    multi-stage build referencing src.train — untested, src.train
-                               has no __main__/entry point yet
+Dockerfile                    multi-stage build referencing src.train — src.train has no
+                               __main__/entry point yet, so the CMD does not run
 PLAN.md                       task breakdown for what remains to be built
 ```
 
 ## How to run
 
-No entry point in this repo is runnable yet — `src/train.py` has no `Trainer` and no
-`if __name__ == "__main__"` block, so `python -m src.train` (referenced in the Dockerfile
-`CMD`) does not work yet.
+Nothing here is runnable end to end yet. `src/train.py` has no `Trainer` and no
+`if __name__ == "__main__"` block, so `python -m src.train` — the Dockerfile's `CMD` — does not
+work, and none of the planned notebooks exist.
 
-Untested / not yet possible to verify:
-- `pip install -e ".[dev]"` — dependencies are declared in `pyproject.toml` but the install
-  itself has not been run in this repo.
-- `pre-commit install` / `pre-commit run --all-files` — configured in
-  `.pre-commit-config.yaml`, not yet run.
-- `docker build .` — the `Dockerfile` exists but has not been built or run.
-- Any notebook — none of the planned notebooks exist yet.
+Once the `Trainer` is written, the intended entry point is:
+
+```
+pip install -e ".[dev]"
+pre-commit install
+```
+
+## Status
+
+**Work in progress, not runnable end-to-end yet.**
+
+- `src/model.py`: `FINE_TO_COARSE` mapping and `VGG16CIFAR100`'s conv blocks (`conv_l1`
+  through `conv_l5`, `avgpool`, `classifier`) are written. `VGG16CIFAR100.forward()`,
+  `VGG16DualHead`, and `build_projection_matrix()` are not written yet.
+- `src/train.py`: `Cutout` and `build_dataloaders` are written. The `Trainer` class
+  (`__init__`, `_train_one_epoch`, `_evaluate`, `_save_checkpoint`, `fit`) is not written yet.
+- `src/experiments/` (`hierarchical.py`, `supcon.py`, `pruning.py`) — not started, files do not
+  exist yet.
+- `notebooks/06_cifar100_baseline.ipynb` through `09_pruning_experiment.ipynb`, referenced in
+  `PLAN.md`, do not exist yet.
+- `tests/` contains only `__init__.py` — no tests written yet.
+- The `Dockerfile` and the `.pre-commit-config.yaml` hooks are configured but have never been
+  built or run against this repo.
+- Nothing has been run end-to-end. No results exist.
